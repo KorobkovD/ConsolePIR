@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30406.217
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsolePIR", "ConsolePIR.csproj", "{090B7EE7-1AC9-4A99-BCCA-428FA7C3E099}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{090B7EE7-1AC9-4A99-BCCA-428FA7C3E099}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{090B7EE7-1AC9-4A99-BCCA-428FA7C3E099}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{090B7EE7-1AC9-4A99-BCCA-428FA7C3E099}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{090B7EE7-1AC9-4A99-BCCA-428FA7C3E099}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {90A1044C-A3E7-4AF7-A52F-9FD7D783231C}
+	EndGlobalSection
+EndGlobal
