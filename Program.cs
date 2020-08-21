@@ -6,50 +6,91 @@ namespace ConsolePIR
 {
     internal class Program
     {
-        //private const int RedLedPin = 6;
-        private const int GreenLedPin = 10;
+        public static readonly string FAQ =
+            $"How to:{Environment.NewLine}" +
+            $"\tFirst argument sets pin number for PIR sensor (12 by default){Environment.NewLine}" +
+            $"\tSecond argument sets pin number for LED (10 by default){Environment.NewLine}" +
+            $"\tThird argument sets PIR sensor delay time for in milliseconds (1000 by default){Environment.NewLine}";
 
-        private const int PirPin = 12;
-        private const int DelayInMilliseconds = 1000;
+        private static int GreenLedPin = 10;
+        private static int PirPin = 12;
+        private static int DelayInMilliseconds = 1000;
         private static bool KeepRunning = true;
         private static GpioController gpioController = new GpioController();
 
-        private static void Main(string[] args)
+        /// <summary>
+        /// Проверка запроса помощи
+        /// </summary>
+        private static bool HelpRequired(string param)
         {
-            Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e)
-            {
-                e.Cancel = true;
-                KeepRunning = false;
-            };
+            return param == "-h" || param == "--help" || param == "/?";
+        }
 
-            gpioController.OpenPin(GreenLedPin, PinMode.Output);
-            //gpioController.OpenPin(RedLedPin, PinMode.Output);
-            gpioController.OpenPin(PirPin, PinMode.Input);
+        private static bool HandleArguments(string[] args)
+        {
+            var handleResult = true;
 
-            while (KeepRunning)
+            if (args.Length > 0)
             {
-                var motionStatus = gpioController.Read(PirPin);
-                if (motionStatus == PinValue.Low)
+                if (HelpRequired(args[0]))
                 {
-                    Console.WriteLine("All clear here...");
-                    gpioController.Write(GreenLedPin, PinValue.Low);
-                    //gpioController.Write(RedLedPin, PinValue.High);
+                    Console.WriteLine(FAQ);
+                    handleResult = false;
                 }
-                else
+
+                if (int.TryParse(args[0], out var pirPin))
                 {
-                    Console.WriteLine("Motion detected!");
-                    gpioController.Write(GreenLedPin, PinValue.High);
-                    //gpioController.Write(RedLedPin, PinValue.Low);
+                    PirPin = pirPin;
                 }
-                Thread.Sleep(DelayInMilliseconds);
+
+                if (args.Length > 1 && int.TryParse(args[1], out var ledPin))
+                {
+                    GreenLedPin = ledPin;
+                }
+
+                if (args.Length > 2 && int.TryParse(args[2], out var delayTime))
+                {
+                    DelayInMilliseconds = delayTime;
+                }
             }
 
-            //gpioController.Write(RedLedPin, PinValue.Low);
-            //gpioController.ClosePin(RedLedPin);
-            gpioController.Write(GreenLedPin, PinValue.Low);
-            gpioController.ClosePin(GreenLedPin);
-            gpioController.ClosePin(PirPin);
-            Console.WriteLine($"{Environment.NewLine}Exited");
+            return handleResult;
+        }
+
+        private static void Main(string[] args)
+        {
+            if (HandleArguments(args))
+            {
+                Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e)
+                {
+                    e.Cancel = true;
+                    KeepRunning = false;
+                };
+
+                gpioController.OpenPin(GreenLedPin, PinMode.Output);
+                gpioController.OpenPin(PirPin, PinMode.Input);
+
+                while (KeepRunning)
+                {
+                    var motionStatus = gpioController.Read(PirPin);
+                    if (motionStatus == PinValue.Low)
+                    {
+                        Console.WriteLine("All clear here...");
+                        gpioController.Write(GreenLedPin, PinValue.Low);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Motion detected!");
+                        gpioController.Write(GreenLedPin, PinValue.High);
+                    }
+                    Thread.Sleep(DelayInMilliseconds);
+                }
+
+                gpioController.Write(GreenLedPin, PinValue.Low);
+                gpioController.ClosePin(GreenLedPin);
+                gpioController.ClosePin(PirPin);
+                Console.WriteLine($"{Environment.NewLine}Exited");
+            }
         }
     }
 }
